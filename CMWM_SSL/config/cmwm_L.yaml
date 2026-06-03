@@ -1,0 +1,51 @@
+# File purpose: CMWM_SSL large-model experiment configuration.
+# CMWM Large Model Configuration
+
+# Data settings
+dataset: 'scand'
+data_root: '/home/xiangyuanpeng/BrainVQ/datasets/scand_latents'
+data_loader: 'data_latents_test'
+sequence_length: 128
+frame_step: 2
+num_sequences: 10000
+batch_size: 4
+num_workers: 4
+train_ratio: 0.8
+val_ratio: 0
+seed: 3407
+
+# First stage model (VAE decoder)
+first_stage_config_path: "/home/xiangyuanpeng/latent-diffusion/configs/autoencoder/autoencoder_kl_32x32x4.yaml"
+first_stage_ckpt_path: "/home/xiangyuanpeng/latent-diffusion/models/first_stage_models/kl-f8/model.ckpt"
+scaling_factor: 0.22765929
+
+# Model architecture
+model:
+  target: CMWM_SSL.models.SSL_fsq.SSL_FSQ_Learner
+  params:
+    d_out: 768
+    beta: 1.0
+    img_height: 16
+    img_width: 16
+    dim: 768
+    depth: 10
+    p_in_encoder: 4
+    random_group: false
+    active_ratio: [2,2,1,1]
+    use_temporal: false
+
+# Training settings
+lr: 3e-5
+num_epochs: 400
+save_interval: 2
+
+# Results directories
+results_dir: 'CMWM_SSL/results/'
+model_dir: 'CMWM_SSL/results/models/cmwm_L_right_testloader'
+img_dir: 'CMWM_SSL/results/images/'
+model_name: 'cmwm_L_scand_seqlen128_depth10_dim768_mse_testloader'
+
+# Optional: load checkpoint
+load_ckps_dir: null
+# Device
+device: 'cuda:0'
